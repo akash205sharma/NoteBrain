@@ -1,14 +1,12 @@
-import React from 'react'
+'use client'
 
-const page = () => {
+import CrepeEditor from '@/components/CrepeEditor'
+
+export default function HomePage() {
   return (
-    <div>
-      
-    </div>
+    <main className="text-white">
+      <CrepeEditor />
+    </main>
   )
 }
-
-export default page
-
-
 

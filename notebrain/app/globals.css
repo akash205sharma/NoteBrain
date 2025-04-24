@@ -104,6 +104,7 @@
 
 .dark {
   --background: oklch(0.145 0 0);
+  /* --background: gray; */
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -140,7 +141,22 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
+
+
+:root .milkdown {
+  --crepe-color-background: #0a0a0a;
+  margin: 1rem 0;
+}
+:root .milkdown .editor .paragraph {
+  margin: 500px;
+}
+:root .milkdown .ProseMirror {
+  padding: 0 4rem;
+} 
+
+
