@@ -3,36 +3,53 @@
 import { useEffect, useRef } from 'react'
 import { Crepe } from '@milkdown/crepe'
 import '@milkdown/crepe/theme/common/style.css'
-// import '@milkdown/crepe/theme/frame.css'
-// import '@milkdown/crepe/theme/frame-dark.css'
 import '@milkdown/crepe/theme/nord-dark.css'
-// import '@milkdown/crepe/theme/crepe.css'
+import { getMarkdown, saveMarkdown } from '@/lib/indexdb'
+// import { insert } from "@milkdown/kit/utils";
 
+type CrepeEditorProps = {
+  onChange?: (markdown: string) => void
+}
+let initialData = '# Welcome To NoteBrain !';
+async function getInitialData() {
+  initialData = await getMarkdown() || '# Welcome To NoteBrain !';
+}
 
+getInitialData();
 
-
-const MilkdownCrepeEditor = () => {
+const CrepeEditor = ({ onChange }: CrepeEditorProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const editorRef = useRef<Crepe | null>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
 
     const crepe = new Crepe({
       root: containerRef.current,
-      defaultValue: '# Hello from Crepe!',
-     
+      defaultValue: initialData,
       features: {
         [Crepe.Feature.CodeMirror]: true,
-        
       },
-      
     })
 
     crepe.create().then(() => {
       console.log('Editor created')
       editorRef.current = crepe
+      let saveTimeout: number | undefined;
+      crepe.on((listener) => {
+        listener.markdownUpdated(async (ctx, markdown) => {
+          onChange?.(markdown)
+
+          clearTimeout(saveTimeout);
+          saveTimeout = window.setTimeout(() => {
+            saveMarkdown(markdown);
+          }, 500);
+
+        })
+      })
+      
     })
+    
+
 
     return () => {
       crepe.destroy()
@@ -40,9 +57,7 @@ const MilkdownCrepeEditor = () => {
     }
   }, [])
 
-  return <div ref={containerRef} className="min-h m-20 h-border border-gray-300 rounded p-2 " />
+  return <div ref={containerRef} className="min-h m-20 h-border border-gray-300 rounded p-2" />
 }
 
-export default MilkdownCrepeEditor
-
-
+export default CrepeEditor

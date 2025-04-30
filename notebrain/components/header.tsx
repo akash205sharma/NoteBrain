@@ -1,6 +1,7 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@radix-ui/react-separator'
+import { RefreshCcw } from 'lucide-react'
 import React from 'react'
 
 export function AppHeader() {
@@ -20,6 +21,7 @@ export function AppHeader() {
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                <RefreshCcw className="animate-spin animateDuration w-5 h-5 ml-1 mt-1 text-white" />
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

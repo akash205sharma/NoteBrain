@@ -150,7 +150,7 @@
 
 :root .milkdown {
   --crepe-color-background: #0a0a0a;
-  margin: 1rem 0;
+  margin: -5rem 0;
 }
 :root .milkdown .editor .paragraph {
   margin: 500px;
@@ -159,4 +159,7 @@
   padding: 0 4rem;
 } 
 
+.animateDuration {
+  animation-duration: 3000ms;
+}
 
