@@ -11,6 +11,17 @@ types of file
 
 
 
+#### Steps ...
+
+1. ~~Render dummy `file.json` in sidebar ~~
+
+2. Store `file.json ` indexedDB;
+
+3. Option for editing `file.json.`
+
+
+
+
 
 
 

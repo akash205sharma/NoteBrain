@@ -1,0 +1,66 @@
+{
+	"name": "NoteBrain",
+	"type": "folder",
+	"children": [
+		{
+			"name": "Academics",
+			"type": "folder",
+			"children": [
+				{
+					"name": "Automata",
+					"type": "folder",
+					"children": [
+						{
+							"name": "Chapter1",
+							"type": "file",
+							"url": ""
+						},
+						{
+							"name": "Chapter2",
+							"type": "file",
+							"url": ""
+						}
+					]
+				},
+				{
+					"name": "probability",
+					"type": "folder",
+					"children": [
+						{
+							"name": "Chapter1",
+							"type": "file",
+							"url": ""
+						},
+						{
+							"name": "midsem",
+							"type": "folder",
+							"children": [
+								{
+									"name": "Chapter2",
+									"type": "file",
+									"url": ""
+								},
+								{
+									"name": "Chapter3",
+									"type": "file",
+									"url": ""
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Web Dev",
+			"type": "folder",
+			"children": [
+				{
+					"name": "ShopEasy",
+					"type": "file",
+					"url": ""
+				}
+			]
+		}
+	]
+}

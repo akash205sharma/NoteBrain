@@ -6,6 +6,8 @@ import '@milkdown/crepe/theme/common/style.css'
 import '@milkdown/crepe/theme/nord-dark.css'
 import { getMarkdown, saveMarkdown } from '@/lib/indexdb'
 // import { insert } from "@milkdown/kit/utils";
+import { useOpenFile } from '@/context/OpenFile'
+
 
 type CrepeEditorProps = {
   onChange?: (markdown: string) => void
@@ -18,6 +20,8 @@ async function getInitialData() {
 getInitialData();
 
 const CrepeEditor = ({ onChange }: CrepeEditorProps) => {
+
+  const {file, toggleisSaving} = useOpenFile();
   const containerRef = useRef<HTMLDivElement | null>(null)
   const editorRef = useRef<Crepe | null>(null)
   useEffect(() => {
@@ -39,11 +43,14 @@ const CrepeEditor = ({ onChange }: CrepeEditorProps) => {
         listener.markdownUpdated(async (ctx, markdown) => {
           onChange?.(markdown)
 
-          clearTimeout(saveTimeout);
+          toggleisSaving(true);
+          clearTimeout(saveTimeout); 
+
           saveTimeout = window.setTimeout(() => {
             saveMarkdown(markdown);
+            toggleisSaving(false);
           }, 500);
-
+          
         })
       })
       

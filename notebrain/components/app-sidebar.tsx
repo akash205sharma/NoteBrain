@@ -1,4 +1,6 @@
-import { Calendar, Home, Inbox, MoreHorizontal, Search, Settings, ChevronRight } from "lucide-react"
+"use client"
+
+import { Calendar, Home, Inbox, MoreHorizontal, Search, Settings, ChevronRight, Folder } from "lucide-react"
 
 import {
   Sidebar,
@@ -15,6 +17,9 @@ import {
 } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible"
+import TreeRender from "./TreeRender"
+import { useEffect, useState } from "react"
+import { TreeNode } from "@/types"
 
 // Menu items.
 const items = [
@@ -46,6 +51,29 @@ const items = [
 ]
 
 export function AppSidebar() {
+
+  const defaultData: TreeNode = {
+    name: "",
+    type: "folder",
+    children: []
+  };
+
+  const [data, setData] = useState<TreeNode>(defaultData);
+
+  const loadData = async () => {
+    const res = await fetch('/filemap.json');
+    const json = await res.json();
+    setData(json);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [])
+
+
+
+
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -86,20 +114,21 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Drop downs</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            {/* <SidebarMenu>
               <Collapsible className="group/collapsible">
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild data-slot="collapsible-content">
-                    <SidebarMenuButton className="flex justify-between">
+                    <SidebarMenuButton className="flex">
+                      <ChevronRight className="transition-transform duration-100 group-data-[state=open]/collapsible:rotate-90" />
+                      <Folder/>
                       <span>Notes1</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
                         <SidebarMenuButton asChild>
-                          <a href="test">
+                          <a href="main/demo">
                             <span>File</span>
                           </a>
                         </SidebarMenuButton>
@@ -108,7 +137,8 @@ export function AppSidebar() {
                   </CollapsibleContent>
                 </SidebarMenuItem>
               </Collapsible>
-            </SidebarMenu>
+            </SidebarMenu> */}
+            <TreeRender node={data}  ></TreeRender>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

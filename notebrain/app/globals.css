@@ -163,3 +163,7 @@
   animation-duration: 3000ms;
 }
 
+.border-sidebar-border{
+    margin-right: 0;
+    padding-right: 0;
+}
