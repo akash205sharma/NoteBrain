@@ -14,12 +14,14 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
+  SidebarRail
 } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible"
 import TreeRender from "./TreeRender"
 import { useEffect, useState } from "react"
 import { TreeNode } from "@/types"
+import { useFileTree } from "@/context/FileTree"
 
 // Menu items.
 const items = [
@@ -51,27 +53,16 @@ const items = [
 ]
 
 export function AppSidebar() {
+  const {tree, setTree} = useFileTree()
 
-  const defaultData: TreeNode = {
-    name: "",
-    type: "folder",
-    children: []
-  };
+  // useEffect(()=>{
+  //   console.log("AppSideBar: Node is Changed Some where ");
+  // },[tree])
 
-  const [data, setData] = useState<TreeNode>(defaultData);
-
-  const loadData = async () => {
-    const res = await fetch('/filemap.json');
-    const json = await res.json();
-    setData(json);
-  };
-
-  useEffect(() => {
-    loadData();
-  }, [])
-
-
-
+  const functionLifting = (changedNode: TreeNode) => {
+    setTree(changedNode)
+	  console.log("Function Lifting app sidebar",tree);
+	}
 
 
   return (
@@ -114,34 +105,14 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Drop downs</SidebarGroupLabel>
           <SidebarGroupContent>
-            {/* <SidebarMenu>
-              <Collapsible className="group/collapsible">
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild data-slot="collapsible-content">
-                    <SidebarMenuButton className="flex">
-                      <ChevronRight className="transition-transform duration-100 group-data-[state=open]/collapsible:rotate-90" />
-                      <Folder/>
-                      <span>Notes1</span>
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuButton asChild>
-                          <a href="main/demo">
-                            <span>File</span>
-                          </a>
-                        </SidebarMenuButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
-            </SidebarMenu> */}
-            <TreeRender node={data}  ></TreeRender>
-          </SidebarGroupContent>
+            {"children" in tree && tree.children[0] ?
+            <TreeRender node={tree.children[0]} parent={tree} functionLifting={functionLifting} ></TreeRender>
+            : <div></div>
+            }
+            </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarRail />
     </Sidebar>
   )
 }

@@ -1,64 +1,85 @@
 {
-	"name": "NoteBrain",
+	"name": "FileTreeRoot",
 	"type": "folder",
 	"children": [
 		{
-			"name": "Academics",
+			"name": "NoteBrain",
 			"type": "folder",
 			"children": [
 				{
-					"name": "Automata",
+					"name": "Academics",
 					"type": "folder",
 					"children": [
 						{
-							"name": "Chapter1",
-							"type": "file",
-							"url": ""
-						},
-						{
-							"name": "Chapter2",
-							"type": "file",
-							"url": ""
-						}
-					]
-				},
-				{
-					"name": "probability",
-					"type": "folder",
-					"children": [
-						{
-							"name": "Chapter1",
-							"type": "file",
-							"url": ""
-						},
-						{
-							"name": "midsem",
+							"name": "Automata",
 							"type": "folder",
 							"children": [
 								{
-									"name": "Chapter2",
+									"name": "Chapter1",
 									"type": "file",
 									"url": ""
 								},
 								{
-									"name": "Chapter3",
+									"name": "Chapter2",
 									"type": "file",
 									"url": ""
 								}
 							]
+						},
+						{
+							"name": "probability",
+							"type": "folder",
+							"children": [
+								{
+									"name": "Chapter1",
+									"type": "file",
+									"url": ""
+								},
+								{
+									"name": "midsem",
+									"type": "folder",
+									"children": [
+										{
+											"name": "Chapter2",
+											"type": "file",
+											"url": ""
+										},
+										{
+											"name": "Chapter3",
+											"type": "file",
+											"url": ""
+										}
+									]
+								}
+							]
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "Web Dev",
-			"type": "folder",
-			"children": [
+				},
 				{
-					"name": "ShopEasy",
-					"type": "file",
-					"url": ""
+					"name": "Web Dev",
+					"type": "folder",
+					"children": [
+						{
+							"name": "NoteBrain",
+							"type": "file",
+							"url": ""
+						},
+						{
+							"name": "Venomous",
+							"type": "file",
+							"url": ""
+						},
+						{
+							"name": "ShopEasy",
+							"type": "file",
+							"url": ""
+						},
+						{
+							"name": "Calculator",
+							"type": "file",
+							"url": ""
+						}
+					]
 				}
 			]
 		}

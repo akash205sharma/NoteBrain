@@ -167,3 +167,17 @@
     margin-right: 0;
     padding-right: 0;
 }
+
+/* chevron */
+.chevron {
+  transition: transform 0.2s ease;
+}
+
+[data-state='open'] > .chevron {
+  transform: rotate(90deg);
+}
+
+
+div[data-slot="sidebar-content"][data-sidebar="content"] {
+  overflow: visible;
+}
