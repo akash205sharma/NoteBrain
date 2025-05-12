@@ -1,7 +1,9 @@
+import { TreeNode } from "@/types";
+
 const DB_NAME = "NoteBrain";
 const DB_VERSION = 3;
 const DB_STORE = "notes";
-
+const DB_TreeStore = 'FileTree'
 let dbPromise: Promise<IDBDatabase> | null = null;
 
 function openDB(): Promise<IDBDatabase> {
@@ -30,12 +32,12 @@ function openDB(): Promise<IDBDatabase> {
   return dbPromise;
 }
 
-export async function saveMarkdown(markdown: string) {
+export async function saveMarkdown(markdown: string, url:string) {
 
   const db = await openDB();
   const tx = db.transaction(DB_STORE, "readwrite");
   const store = tx.objectStore(DB_STORE);
-  store.put(markdown, "latest"); // using key 'latest'
+  store.put(markdown, url); // using key 'latest'
   
   return new Promise<void>((resolve, reject) => {
     tx.oncomplete = () => resolve();
@@ -43,6 +45,7 @@ export async function saveMarkdown(markdown: string) {
     tx.onabort = () => reject(tx.error);
   });
 }
+
 
 export async function getMarkdown2(){
     const db = await openDB();
@@ -57,13 +60,13 @@ export async function getMarkdown2(){
     }
 }
 
-export async function getMarkdown(): Promise<string> {
+export async function getMarkdown(url:string): Promise<string> {
     const db = await openDB();
     const tx = db.transaction(DB_STORE, "readonly");
     const store = tx.objectStore(DB_STORE);
     
     return new Promise((resolve, reject) => {
-        const dataRequest = store.get("latest");
+        const dataRequest = store.get(url);
         dataRequest.onsuccess = () => {
             resolve(dataRequest.result || "");
         };
@@ -71,4 +74,31 @@ export async function getMarkdown(): Promise<string> {
             resolve("");
         };
     });
+}
+export async function getFileTree(){
+  const db = await openDB();
+    const tx = db.transaction(DB_STORE, "readonly");
+    const store = tx.objectStore(DB_STORE);
+    
+    return new Promise((resolve, reject) => {
+        const dataRequest = store.get("Filetree");
+        dataRequest.onsuccess = () => {
+            resolve(dataRequest.result);
+        };
+        dataRequest.onerror = () => {
+            // resolve();
+        };
+    });
+}
+export async function saveFileTree(tree:TreeNode){
+  const db = await openDB();
+  const tx = db.transaction(DB_STORE, "readwrite");
+  const store = tx.objectStore(DB_STORE);
+  store.put(tree, "Filetree"); // using key 'latest'
+  
+  return new Promise<void>((resolve, reject) => {
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
 }

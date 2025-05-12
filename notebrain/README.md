@@ -8,13 +8,10 @@ types of file
 5. github storage
 6. real time collaboration
 7. mind map of notes
-
+8. Page Deploying.
 
 
 #### Steps ...
-
-1. ~~Render dummy `file.json` in sidebar ~~
-
 
 3. Option for editing `file.json.`
 2. Store `file.json ` indexedDB;
@@ -27,45 +24,13 @@ types of file
 
 # Hello I am Akash
 
-* I am a good software engineer
-
-* i am making a text editor
-
-* i am studying development
-
-- [x] I have studied many things
-
-- [x] i have made many websites.
-
-- [x] I am now making this sites.
-
-#### I will make big company and contribute to my Country India.
-
-<br />
-
-##### I will never stop Contributing.
-
-hello
-
-hello
-
-hello hello
-
-<br />
-
-<br />
-
-<br />
-
-<br />
-
 #### Steps ...
 
 * [x] Render dummy `file.json` in sidebar
 
-* [ ] Option for editing `file.json.`
+* [x] Option for editing `file.json.`
 
-* [ ] Store `file.json `     indexedDB&#x20;
+* [ ] Store `file.json ` indexedDB
 
 
 ###### Problems ######
@@ -89,4 +54,8 @@ hello hello
     for showing effect of deleting the file.
 }
 
+5. for addnew{
+    made a addnewdialog wrapper which call a function addnew came from treeRender as props.
+    addnew is handelnew which upadates current nodeand call functionliftiong2 fro upadateing current parent then backtrack
+}
 

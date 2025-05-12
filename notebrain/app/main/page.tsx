@@ -3,9 +3,14 @@
 import CrepeEditor from '@/components/CrepeEditor'
 import { useEffect, useState } from 'react'
 
+
 export default function HomePage() {
 
+
+
   const [markdown, setMarkdown] = useState('')
+
+
 
 
   return (

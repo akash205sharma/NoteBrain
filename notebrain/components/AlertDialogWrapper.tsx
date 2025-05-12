@@ -25,10 +25,7 @@ export default function AlertDialogWrapper({
   title = "Are you sure?",
   description = "This action cannot be undone.",
 }: AlertDialogWrapperProps) {
-  const handleAction = (result: boolean) => {
-    onResolve(result);
-    setOpen(false);
-  };
+
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>

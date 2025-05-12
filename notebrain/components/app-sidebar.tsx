@@ -24,43 +24,41 @@ import { TreeNode } from "@/types"
 import { useFileTree } from "@/context/FileTree"
 
 // Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-]
+// const items = [
+//   {
+//     title: "Home",
+//     url: "#",
+//     icon: Home,
+//   },
+//   {
+//     title: "Inbox",
+//     url: "#",
+//     icon: Inbox,
+//   },
+//   {
+//     title: "Calendar",
+//     url: "#",
+//     icon: Calendar,
+//   },
+//   {
+//     title: "Search",
+//     url: "#",
+//     icon: Search,
+//   },
+//   {
+//     title: "Settings",
+//     url: "#",
+//     icon: Settings,
+//   },
+// ]
 
 export function AppSidebar() {
+  
   const {tree, setTree} = useFileTree()
-
-  // useEffect(()=>{
-  //   console.log("AppSideBar: Node is Changed Some where ");
-  // },[tree])
-
+  
   const functionLifting = (changedNode: TreeNode) => {
     setTree(changedNode)
+    console.log("changedNode",changedNode);
 	  console.log("Function Lifting app sidebar",tree);
 	}
 
@@ -68,7 +66,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -99,14 +97,14 @@ export function AppSidebar() {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
 
 
         <SidebarGroup>
           <SidebarGroupLabel>Drop downs</SidebarGroupLabel>
           <SidebarGroupContent>
             {"children" in tree && tree.children[0] ?
-            <TreeRender node={tree.children[0]} parent={tree} functionLifting={functionLifting} ></TreeRender>
+            <TreeRender url={"http://localhost:3000/main"} node={tree.children[0]} parent={tree} functionLifting={functionLifting} ></TreeRender>
             : <div></div>
             }
             </SidebarGroupContent>

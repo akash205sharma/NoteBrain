@@ -1,31 +1,35 @@
-'use client'
+'use client';
 
-import { useEffect, useRef } from 'react'
-import { Crepe } from '@milkdown/crepe'
-import '@milkdown/crepe/theme/common/style.css'
-import '@milkdown/crepe/theme/nord-dark.css'
-import { getMarkdown, saveMarkdown } from '@/lib/indexdb'
-// import { insert } from "@milkdown/kit/utils";
-import { useOpenFile } from '@/context/OpenFile'
-
+import { useEffect, useRef, useState } from 'react';
+import { Crepe } from '@milkdown/crepe';
+import '@milkdown/crepe/theme/common/style.css';
+import '@milkdown/crepe/theme/nord-dark.css';
+import { getMarkdown, saveMarkdown } from '@/lib/indexdb';
+import { useOpenFile } from '@/context/OpenFile';
 
 type CrepeEditorProps = {
-  onChange?: (markdown: string) => void
-}
-let initialData = '# Welcome To NoteBrain !';
-async function getInitialData() {
-  initialData = await getMarkdown() || '# Welcome To NoteBrain !';
-}
-
-getInitialData();
+  onChange?: (markdown: string) => void;
+};
 
 const CrepeEditor = ({ onChange }: CrepeEditorProps) => {
+  const { file, toggleisSaving } = useOpenFile();
+  const [initialData, setInitialData] = useState<string | null>(null);
 
-  const {file, toggleisSaving} = useOpenFile();
-  const containerRef = useRef<HTMLDivElement | null>(null)
-  const editorRef = useRef<Crepe | null>(null)
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const editorRef = useRef<Crepe | null>(null);
+
+  // Fetch initial markdown on mount
   useEffect(() => {
-    if (!containerRef.current) return
+    const loadInitialData = async () => {
+      const markdown = await getMarkdown(file.url);
+      setInitialData(markdown || '# Welcome To NoteBrain !');
+    };
+    loadInitialData();
+  }, [file.url]);
+
+  // Create the editor once initialData is ready
+  useEffect(() => {
+    if (!containerRef.current || initialData === null) return;
 
     const crepe = new Crepe({
       root: containerRef.current,
@@ -33,38 +37,36 @@ const CrepeEditor = ({ onChange }: CrepeEditorProps) => {
       features: {
         [Crepe.Feature.CodeMirror]: true,
       },
-    })
+    });
 
     crepe.create().then(() => {
-      console.log('Editor created')
-      editorRef.current = crepe
+      console.log('Editor created');
+      editorRef.current = crepe;
+
       let saveTimeout: number | undefined;
+
       crepe.on((listener) => {
         listener.markdownUpdated(async (ctx, markdown) => {
-          onChange?.(markdown)
+          onChange?.(markdown);
 
           toggleisSaving(true);
-          clearTimeout(saveTimeout); 
+          clearTimeout(saveTimeout);
 
           saveTimeout = window.setTimeout(() => {
-            saveMarkdown(markdown);
+            saveMarkdown(markdown, file.url);
             toggleisSaving(false);
           }, 500);
-          
-        })
-      })
-      
-    })
-    
-
+        });
+      });
+    });
 
     return () => {
-      crepe.destroy()
-      console.log('Editor destroyed')
-    }
-  }, [])
+      crepe.destroy();
+      console.log('Editor destroyed');
+    };
+  }, [initialData]);
 
-  return <div ref={containerRef} className="min-h m-20 h-border border-gray-300 rounded p-2" />
-}
+  return <div ref={containerRef} className="min-h m-20 h-border border-gray-300 rounded p-2" />;
+};
 
-export default CrepeEditor
+export default CrepeEditor;
