@@ -1,11 +1,10 @@
-'use client'; // for app router only
+'use client';
 
-import { getFileTree, saveFileTree } from '@/lib/indexdb';
-import { TreeNode,FolderNode } from '@/types';
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
-
-import { Dispatch, SetStateAction } from 'react';
+import { getFileTree as getFileTreeFromIDB, saveFileTree } from '@/lib/indexdb';
+import { getFileTreeFromGitHubJSON, uploadToGitHub } from '@/lib/github';
+import { FolderNode, TreeNode } from '@/types';
+import { createContext, useContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface FileTreeContextType {
     tree: TreeNode;
@@ -15,35 +14,62 @@ interface FileTreeContextType {
 const FileTree = createContext<FileTreeContextType | null>(null);
 
 export const FileTreeProvider = ({ children }: { children: ReactNode }) => {
-
     const defaultData: TreeNode = {
         name: "FileTreeRoot",
         type: "folder",
-        children: []
+        children: [],
     };
 
     const [tree, setTree] = useState<TreeNode>(defaultData);
-
-    const loadData = async () => {
-        const res = await getFileTree() as TreeNode;
-        console.log("res",res)
-        setTree(res);
-
-        // const res = await fetch('/filemap.json');
-        // const json = await res.json();
-        // setTree(json);
-    };
+    const [loaded, setLoaded] = useState(false);
+    const { data: session } = useSession();
 
     useEffect(() => {
-        loadData();
-    }, [])
+        const loadTree = async () => {
+            let loadedFromGitHub = false;
+
+            try {
+                // 1. Try IndexedDB first
+                const idbTree = await getFileTreeFromIDB() as FolderNode;
+                if (idbTree && idbTree.children?.length) {
+                    setTree(idbTree);
+                } else if (session?.accessToken) {
+                    // 2. If IndexedDB empty, fetch from GitHub
+                    const githubTree = await getFileTreeFromGitHubJSON({
+                        owner: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "your-username",
+                        repo: "note-brain-data",
+                        token: session.accessToken,
+                    });
+
+                    setTree(githubTree);
+                    await saveFileTree(githubTree); // Cache into IDB
+                    loadedFromGitHub = true;
+                }
+            } catch (err) {
+                console.error("Failed to load file tree:", err);
+            }
+
+            setLoaded(true);
+        };
+
+        loadTree();
+    }, [session?.accessToken]);
 
     useEffect(() => {
-      //store in db
-      saveFileTree(tree);
-    }, [tree])
-    
-
+        if (loaded) {
+            saveFileTree(tree);
+            if (session && session.accessToken) {
+                uploadToGitHub({
+                    token: session.accessToken,
+                    owner: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "GITHUB_USERNAME",
+                    repo: "note-brain-data",
+                    path: "filetree.json",
+                    content: JSON.stringify(tree, null, 2),
+                    message: "Update file tree",
+                });
+            }
+        }
+    }, [tree, loaded]);
 
     return (
         <FileTree.Provider value={{ tree, setTree }}>
@@ -52,11 +78,10 @@ export const FileTreeProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-
 export const useFileTree = () => {
     const context = useContext(FileTree);
     if (!context) {
-        throw new Error('useFileTree must be used within an FileTreeProvider');
+        throw new Error('useFileTree must be used within a FileTreeProvider');
     }
     return context;
 };

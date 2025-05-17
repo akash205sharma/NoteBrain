@@ -32,12 +32,19 @@ function openDB(): Promise<IDBDatabase> {
   return dbPromise;
 }
 
-export async function saveMarkdown(markdown: string, url:string) {
+function extractFileName(url: string): string {
+  return url.split("/").filter(Boolean).pop() || "";           //  replacing "/yourLibrary/"
+}
+function toFullUrl(fileName: string, folder = "/yourLibrary"): string {
+  return `${folder}/${fileName}`;
+}
 
+export async function saveMarkdown(markdown: string, url:string) {
+  const newUrl = extractFileName(url);
   const db = await openDB();
   const tx = db.transaction(DB_STORE, "readwrite");
   const store = tx.objectStore(DB_STORE);
-  store.put(markdown, url); // using key 'latest'
+  store.put(markdown, newUrl); // using key newUrl
   
   return new Promise<void>((resolve, reject) => {
     tx.oncomplete = () => resolve();
@@ -46,27 +53,13 @@ export async function saveMarkdown(markdown: string, url:string) {
   });
 }
 
-
-export async function getMarkdown2(){
-    const db = await openDB();
-    const tx = db.transaction(DB_STORE,"readonly");
-    const store = tx.objectStore(DB_STORE);
-    const dataRequest = store.get("latest");
-    dataRequest.onsuccess= (event)=>{
-        return dataRequest.result;
-    }
-    dataRequest.onerror=(event)=>{
-        return "";
-    }
-}
-
 export async function getMarkdown(url:string): Promise<string> {
     const db = await openDB();
     const tx = db.transaction(DB_STORE, "readonly");
     const store = tx.objectStore(DB_STORE);
-    
+    const newUrl = extractFileName(url);
     return new Promise((resolve, reject) => {
-        const dataRequest = store.get(url);
+        const dataRequest = store.get(newUrl);
         dataRequest.onsuccess = () => {
             resolve(dataRequest.result || "");
         };
@@ -94,8 +87,46 @@ export async function saveFileTree(tree:TreeNode){
   const db = await openDB();
   const tx = db.transaction(DB_STORE, "readwrite");
   const store = tx.objectStore(DB_STORE);
-  store.put(tree, "Filetree"); // using key 'latest'
+  store.put(tree, "Filetree"); // using key Filetree
   
+  return new Promise<void>((resolve, reject) => {
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+}
+
+
+export async function getAllMarkdownFiles(): Promise<{ url: string, markdown: string }[]> {
+  const db = await openDB();
+  const tx = db.transaction(DB_STORE, "readonly");
+  const store = tx.objectStore(DB_STORE);
+
+  return new Promise((resolve, reject) => {
+    const allEntries: { url: string; markdown: string }[] = [];
+    const request = store.openCursor();
+
+    request.onsuccess = (event) => {
+      const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+      if (cursor) {
+        allEntries.push({ url: cursor.key as string, markdown: cursor.value });
+        cursor.continue();
+      } else {
+        resolve(allEntries);
+      }
+    };
+
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function deleteMarkdown(url: string): Promise<void> {
+  const newUrl = extractFileName(url); // ensure key format matches stored format
+  const db = await openDB();
+  const tx = db.transaction(DB_STORE, "readwrite");
+  const store = tx.objectStore(DB_STORE);
+  store.delete(newUrl); // delete by key
+
   return new Promise<void>((resolve, reject) => {
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);

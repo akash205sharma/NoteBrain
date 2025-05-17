@@ -3,7 +3,7 @@ jai shree ram
 types of file
 1. text file
 2. code file -> with compiler
-3. canva file ->hand written
+3. canva file -> hand written
 4. hybrib -> images, emogis, videos, code file, -> like a blog ->
 5. github storage
 6. real time collaboration
@@ -13,11 +13,11 @@ types of file
 
 #### Steps ...
 
-3. Option for editing `file.json.`
-2. Store `file.json ` indexedDB;
-4. Dynamic editing page for every file created.
-5. store in github.
-6. 
+Login uI
+codeEditor
+code Collaborator
+
+
 
 
 
@@ -30,7 +30,7 @@ types of file
 
 * [x] Option for editing `file.json.`
 
-* [ ] Store `file.json ` indexedDB
+* [x] Store `file.json ` indexedDB
 
 
 ###### Problems ######
@@ -59,3 +59,10 @@ types of file
     addnew is handelnew which upadates current nodeand call functionliftiong2 fro upadateing current parent then backtrack
 }
 
+
+6. Always update Filetree in github when chnages in filetree Context
+7. Load FileTree from github and also store in indexeddb for more reloads
+
+8. when deleting folder or file from tree render{
+    recursively delete all markdowns belonging from that folder using deleteFolder() in TreeRender 
+}

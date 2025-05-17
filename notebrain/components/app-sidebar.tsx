@@ -22,7 +22,8 @@ import TreeRender from "./TreeRender"
 import { useEffect, useState } from "react"
 import { TreeNode } from "@/types"
 import { useFileTree } from "@/context/FileTree"
-
+import AddNewDialogWrapper from "./AddNewDialogWrapper"
+import { saveFileTree } from '@/lib/indexdb';
 // Menu items.
 // const items = [
 //   {
@@ -55,16 +56,57 @@ import { useFileTree } from "@/context/FileTree"
 export function AppSidebar() {
   
   const {tree, setTree} = useFileTree()
+  // console.log(tree)
   
   const functionLifting = (changedNode: TreeNode) => {
     setTree(changedNode)
-    console.log("changedNode",changedNode);
-	  console.log("Function Lifting app sidebar",tree);
-	}
+    console.log("changedNode", changedNode);
+    console.log("Function Lifting app sidebar", tree);
+  }
+  
+  const [showAdd, setShowAdd] = useState(false);
+  const [isAddFile, setIsAddFile] = useState(true);
+
+  const handleAddNew = async (name: string) => {
+    if (name.length > 0) {
+      var newChildren: TreeNode;
+      if (isAddFile) {
+        newChildren = {
+          name: name,
+          type: "file",
+          url: "/yourLibrary" + "/" + name,
+        }
+      }
+      else {
+        newChildren = {
+          name: name,
+          type: "folder",
+          children: [],
+        }
+      }
+      if (tree.type === "folder" && Array.isArray(tree.children)) {
+        const node = tree;
+        node.children.push(newChildren);
+        setTree(node);
+        saveFileTree(tree);
+      }
+    }
+    else {
+      console.log("Name can not be empty")
+    }
+
+  }
 
 
   return (
     <Sidebar>
+      {showAdd &&
+        <AddNewDialogWrapper
+          open={showAdd}
+          setOpen={setShowAdd}
+          addName={handleAddNew}
+        />
+      }
       <SidebarContent>
         {/* <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -101,13 +143,31 @@ export function AppSidebar() {
 
 
         <SidebarGroup>
-          <SidebarGroupLabel>Drop downs</SidebarGroupLabel>
+          <SidebarGroupLabel className="flex " >
+            <div>Your Library</div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuAction className="m-2">
+                  <MoreHorizontal />
+                </SidebarMenuAction>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="right" align="start" className="border bg-black rounded p-2" >
+                <DropdownMenuItem className="p-2 rounded hover:bg-[#18181b]" onClick={() => { setShowAdd(true); setIsAddFile(false) }}>
+                  <span className='cursor-pointer'>New Folder</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="p-2 rounded hover:bg-[#18181b]" onClick={() => { setShowAdd(true); setIsAddFile(true) }}>
+                  <span className='cursor-pointer'>New File</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             {"children" in tree && tree.children[0] ?
-            <TreeRender url={"http://localhost:3000/main"} node={tree.children[0]} parent={tree} functionLifting={functionLifting} ></TreeRender>
-            : <div></div>
+              tree.children.map((child, index) => (
+                <TreeRender key={index} url={"/yourLibrary/" + `${child.name}`} node={child} parent={tree} functionLifting={functionLifting} />
+              )) : <div></div>
             }
-            </SidebarGroupContent>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarRail />

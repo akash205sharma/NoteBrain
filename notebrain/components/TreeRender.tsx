@@ -9,10 +9,15 @@ import Link from 'next/link'
 import AlertDialogWrapper from './AlertDialogWrapper'
 import { useOpenFile } from '@/context/OpenFile'
 import AddNewDialogWrapper from './AddNewDialogWrapper'
+import { deleteFileFromGitHub } from '@/lib/github'
+import { useDeleteFileFromGitHub } from './SyncWithGit'
+import { useSession } from 'next-auth/react'
+import { deleteMarkdown } from '@/lib/indexdb'
 
-const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; parent: TreeNode, functionLifting: (changedNode: TreeNode) => void , url:string }) => {
+const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; parent: TreeNode, functionLifting: (changedNode: TreeNode) => void, url: string }) => {
 	// console.log(node)
-	
+
+
 	const [nodes, setNodes] = useState({      // for immediately showing effect
 		nodeState: node,
 		parentState: parent,
@@ -27,6 +32,7 @@ const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; pa
 	const [showAdd, setShowAdd] = useState(false);
 	const [isAddFile, setIsAddFile] = useState(true);
 	const [onResolve, setOnResolve] = useState<(confirmed: boolean) => void>(() => () => { });
+	const deleteFileFromGitHub = useDeleteFileFromGitHub();
 
 	const confirmAlert = (): Promise<boolean> => {
 		return new Promise((resolve) => {
@@ -44,7 +50,19 @@ const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; pa
 		}
 	};
 
-	const deleteFile = () => {
+	async function deleteFolder(node: TreeNode) {
+		if (node.type === "folder") {
+			node.children.forEach(async child => {
+				deleteFolder(child)
+			});
+		}
+		else{
+			await deleteMarkdown(node.url)
+			await deleteFileFromGitHub(node.url);
+		}
+	}
+
+	const deleteFile = async () => {
 		if (parent && 'children' in parent) {
 			// Immutable update of parent
 			const updatedParent = {
@@ -54,6 +72,12 @@ const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; pa
 			console.log("Element Deleted", node);
 			console.log("After Deletion", updatedParent);
 			setNodes({ nodeState: node, parentState: updatedParent });
+
+
+			// ✅ DeleteFile
+			await deleteFolder(node)
+
+
 			functionLifting(updatedParent);
 		} else {
 			functionLifting(node); // for root
@@ -88,14 +112,14 @@ const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; pa
 				newChildren = {
 					name: name,
 					type: "file",
-					url: url + "/" + name,
+					url: url + "-" + name,
 				}
 			}
 			else {
 				newChildren = {
 					name: name,
 					type: "folder",
-					children:[],
+					children: [],
 				}
 			}
 			if (node.type === "folder" && Array.isArray(node.children)) {
@@ -110,11 +134,11 @@ const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; pa
 
 	}
 
-	console.log(url);
 
 
 	return (
 		<SidebarMenu>
+
 			{showAlert &&
 				<AlertDialogWrapper
 					open={showAlert}
@@ -161,7 +185,7 @@ const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; pa
 						{nodes.nodeState.children.map((child, index) => (
 							<CollapsibleContent key={index} >
 								<SidebarMenuSub>
-									<TreeRender url={url+ `/${child.name}`} node={child} parent={nodes.nodeState} functionLifting={functionLifting2} />
+									<TreeRender url={url + `-${child.name}`} node={child} parent={nodes.nodeState} functionLifting={functionLifting2} />
 								</SidebarMenuSub>
 							</CollapsibleContent>
 						))}

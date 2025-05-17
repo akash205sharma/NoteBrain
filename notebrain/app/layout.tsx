@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { OpenFileProvider } from "@/context/OpenFile";
-import { FileTreeProvider } from "@/context/FileTree";
+import { Providers } from "@/components/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,11 +28,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <FileTreeProvider>
-          <OpenFileProvider>
-            {children}
-          </OpenFileProvider>
-        </FileTreeProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
