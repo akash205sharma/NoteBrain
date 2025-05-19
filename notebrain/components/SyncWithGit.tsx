@@ -29,7 +29,7 @@ export function SyncWithGit() {
         content: JSON.stringify(tree, null, 2),
         message: "Update file tree",
       });
-      alert("Folder Structure Uploaded!");
+      // alert("Folder Structure Uploaded!");
 
 
       //Store all markdown form indexed db

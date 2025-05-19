@@ -11,11 +11,16 @@ types of file
 8. Page Deploying.
 
 
+
 #### Steps ...
 
-Login uI
-codeEditor
-code Collaborator
+load markdown from github
+Login UI
+CodeRunner
+Collaborator
+
+image url problem
+codeblock run button problem
 
 
 
@@ -66,3 +71,8 @@ code Collaborator
 8. when deleting folder or file from tree render{
     recursively delete all markdowns belonging from that folder using deleteFolder() in TreeRender 
 }
+
+# Running Code
+1. Running in docker
+2. Run button using getElementsByClassName and querySelector;
+
