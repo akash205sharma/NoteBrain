@@ -7,10 +7,14 @@ export interface RunningCodeContextType {
   isRunning: boolean;
   isSidebarOpen: boolean;
   code: string;
+  language:string;
+  input:string;
   output: string;
   setIsRunning: (value: boolean) => void;
   setIsSidebarOpen: (value: boolean) => void;
   setCode: (value: string) => void;
+  setLang: (value: string) => void;
+  setInput: (value: string) => void;
   setOutput: (value: string) => void;
 }
 
@@ -20,6 +24,8 @@ export const RunningCodeProvider = ({ children }: { children: ReactNode }) => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [code, setCode] = useState<string>('');
+  const [language, setLang] = useState<string>('');
+  const [input, setInput] = useState<string>('');
   const [output, setOutput] = useState<string>('');
 
   return (
@@ -28,10 +34,14 @@ export const RunningCodeProvider = ({ children }: { children: ReactNode }) => {
         isRunning,
         isSidebarOpen,
         code,
+        language,
+        input,
         output,
         setIsRunning,
         setIsSidebarOpen,
         setCode,
+        setLang,
+        setInput,
         setOutput,
       }}
     >

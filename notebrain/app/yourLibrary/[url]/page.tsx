@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import ReactDOM from 'react-dom/client'; 
+import ReactDOM from 'react-dom/client';
 import { Play } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation'
 import CrepeEditor from '@/components/CrepeEditor'
@@ -20,13 +20,16 @@ const page = () => {
     isRunning,
     isSidebarOpen,
     code,
+    language,
     output,
     setIsRunning,
     setIsSidebarOpen,
     setCode,
+    setLang,
+    setInput,
     setOutput,
   } = useRunningCode();
-    
+
   useEffect(() => {
     //   if (!isValid && pathname) {
     //     console.log("validity");
@@ -48,48 +51,61 @@ const page = () => {
 
 
   useEffect(() => {
-  const codeBlocks = document.getElementsByClassName('milkdown-code-block');
+    setIsSidebarOpen(false)
+    const codeBlocks = document.getElementsByClassName('milkdown-code-block');
 
-  Array.from(codeBlocks).forEach((block) => {
-    const toolsDiv = block.querySelector('.tools');
+    Array.from(codeBlocks).forEach((block) => {
+      const toolsDiv = block.querySelector('.tools');
 
-    if (toolsDiv && !toolsDiv.querySelector('.react-run-button')) {
-      // Create a container div for React component
-      const reactRootDiv = document.createElement('div');
-      reactRootDiv.className = 'react-run-button';
-      reactRootDiv.style.marginLeft = '8px';
-      toolsDiv.appendChild(reactRootDiv);
+      if (toolsDiv && !toolsDiv.querySelector('.react-run-button')) {
+        // Create a container div for React component
+        const reactRootDiv = document.createElement('div');
+        reactRootDiv.className = 'react-run-button';
+        reactRootDiv.style.marginLeft = '8px';
+        toolsDiv.appendChild(reactRootDiv);
 
-      // Mount your React RunButton inside the container
-      const cmContent = block.querySelector('div.cm-content');
+        // Mount your React RunButton inside the container
+        const cmContent = block.querySelector('div.cm-content');
 
-      const handleRun = async () => {
-        if (!cmContent) return;
+        const handleRun = async () => {
+          if (!cmContent) return;
+          const language = cmContent.getAttribute('data-language') || 'cpp';
+          const codeText = (cmContent as HTMLElement).innerText;
+          setCode(codeText);
+          setLang(language);
+          setIsSidebarOpen(false);
+          setOutput("")
+          setTimeout(() => {
+            setIsSidebarOpen(true);
+          }, 100);
+        };
 
-        const language = cmContent.getAttribute('data-language') || 'cpp';
-        const codeText = (cmContent as HTMLElement).innerText;
-
-        if (codeText) {
-          setIsSidebarOpen(true)
-          setIsRunning(true)
-          const result = await runCode(codeText, language);
-          if(result){
-            setIsRunning(false);
-            setOutput(result.output)
-          }
-          console.log('Output:', output);
-        }
-      };
-
-      const root = ReactDOM.createRoot(reactRootDiv); // React 18+
-      root.render(<Play onClick={handleRun} className='active:fill-white transition duration-150 hover:text-blue-400 cursor-pointer' />);
+        const root = ReactDOM.createRoot(reactRootDiv); // React 18+
+        root.render(<Play onClick={handleRun} className='active:fill-white transition duration-150 hover:text-blue-400 cursor-pointer' />);
+      }
+    });
+  }, [markdown]);
+  
+  const run = async () => {
+    if (code) {
+      const result = await runCode(code, language);
+      setIsRunning(false);
+      if (result) {
+        setOutput(result.output)
+      }
+      else setOutput("Error: Some Problem Occured")
     }
-  });
-}, [markdown]);
+  };
+
+  useEffect(() => {
+    if(isRunning) run();
+  }, [isRunning])
+
+
 
 
   return (
-    <main className ="w-full text-white">
+    <main className="w-full text-white">
       <CrepeEditor onChange={(value) => setMarkdown(value)} />
     </main>
   )
