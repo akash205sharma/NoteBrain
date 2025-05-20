@@ -1,5 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
+import ReactDOM from 'react-dom/client'; 
+import { Play } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation'
 import CrepeEditor from '@/components/CrepeEditor'
 import { useOpenFile } from '@/context/OpenFile'
@@ -7,13 +9,24 @@ import { isValidPath } from '@/lib/validatePath'
 import { useFileTree } from "@/context/FileTree"
 import { codeBlockComponent, codeBlockView } from '@milkdown/components/code-block'
 import { runCode } from '@/actions/runCode'
+import { useRunningCode } from '@/context/RunningCode';
 
 const page = () => {
   const { tree, setTree } = useFileTree()
   const { file, setUrl } = useOpenFile();
   const pathname = usePathname()
   const [isValid, setIsValid] = useState<boolean>(false);
-
+  const {
+    isRunning,
+    isSidebarOpen,
+    code,
+    output,
+    setIsRunning,
+    setIsSidebarOpen,
+    setCode,
+    setOutput,
+  } = useRunningCode();
+    
   useEffect(() => {
     //   if (!isValid && pathname) {
     //     console.log("validity");
@@ -33,47 +46,50 @@ const page = () => {
 
   const [markdown, setMarkdown] = useState('')
 
-  // if (!isValid) {
-  //   return <div className="text-red-500 text-center mt-10 text-xl">404 - File Not Found</div>;
-  // }
-
-  // console.log(pathname)
 
   useEffect(() => {
-    const codeBlocks = document.getElementsByClassName('milkdown-code-block');
-    Array.from(codeBlocks).forEach((block)  => {
-      const toolsDiv = block.querySelector('.tools');
+  const codeBlocks = document.getElementsByClassName('milkdown-code-block');
 
-      if (toolsDiv && !toolsDiv.querySelector('.run-btn')) {
-        const runBtn = document.createElement('div');
-        runBtn.className = 'run-btn';
-        runBtn.style.cursor = 'pointer';
-        runBtn.style.marginLeft = '8px';
-        runBtn.textContent = 'Run';
-        runBtn.onclick = async () => {
-          // Replace this with your run logic
-          console.log('Run button clicked!');
+  Array.from(codeBlocks).forEach((block) => {
+    const toolsDiv = block.querySelector('.tools');
 
-          const cmContent = block.querySelector('div.cm-content');
-          if (cmContent) {
-            const language = cmContent.getAttribute('data-language');
-            // Get all text content from child nodes (including nested)
-            const codeText = (cmContent as HTMLElement).innerText;
-            console.log('Language:', language);
-            console.log('Code:', codeText);
-            if (codeText && language){
-              const output = await runCode(codeText, language);
-              console.log(output)
-            }
+    if (toolsDiv && !toolsDiv.querySelector('.react-run-button')) {
+      // Create a container div for React component
+      const reactRootDiv = document.createElement('div');
+      reactRootDiv.className = 'react-run-button';
+      reactRootDiv.style.marginLeft = '8px';
+      toolsDiv.appendChild(reactRootDiv);
+
+      // Mount your React RunButton inside the container
+      const cmContent = block.querySelector('div.cm-content');
+
+      const handleRun = async () => {
+        if (!cmContent) return;
+
+        const language = cmContent.getAttribute('data-language') || 'cpp';
+        const codeText = (cmContent as HTMLElement).innerText;
+
+        if (codeText) {
+          setIsSidebarOpen(true)
+          setIsRunning(true)
+          const result = await runCode(codeText, language);
+          if(result){
+            setIsRunning(false);
+            setOutput(result.output)
           }
-        };
-        toolsDiv.appendChild(runBtn);
-      }
-    });
-  }, [markdown]);
+          console.log('Output:', output);
+        }
+      };
+
+      const root = ReactDOM.createRoot(reactRootDiv); // React 18+
+      root.render(<Play onClick={handleRun} className='active:fill-white transition duration-150 hover:text-blue-400 cursor-pointer' />);
+    }
+  });
+}, [markdown]);
+
 
   return (
-    <main className="text-white">
+    <main className ="w-full text-white">
       <CrepeEditor onChange={(value) => setMarkdown(value)} />
     </main>
   )

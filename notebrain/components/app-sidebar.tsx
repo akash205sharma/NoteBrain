@@ -24,6 +24,7 @@ import { TreeNode } from "@/types"
 import { useFileTree } from "@/context/FileTree"
 import AddNewDialogWrapper from "./AddNewDialogWrapper"
 import { saveFileTree } from '@/lib/indexdb';
+
 // Menu items.
 // const items = [
 //   {
@@ -108,6 +109,7 @@ export function AppSidebar() {
         />
       }
       <SidebarContent>
+
         {/* <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -169,6 +171,7 @@ export function AppSidebar() {
             }
           </SidebarGroupContent>
         </SidebarGroup>
+        
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

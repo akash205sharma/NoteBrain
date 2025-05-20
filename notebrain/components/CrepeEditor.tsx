@@ -7,12 +7,6 @@ import '@milkdown/crepe/theme/nord-dark.css';
 import { getMarkdown, saveMarkdown } from '@/lib/indexdb';
 import { useOpenFile } from '@/context/OpenFile';
 
-// import { createReactRenderer } from '@crepe/react';
-import { RunCodeBlock } from '@/components/RunCodeBlock';
-import { codeBlockComponent, codeBlockView } from '@milkdown/components/code-block'
-// import { runCodeMilkdownPlugin } from './runCodePlugin';
-
-
 
 type CrepeEditorProps = {
   onChange?: (markdown: string) => void;
@@ -34,7 +28,6 @@ const CrepeEditor = ({ onChange }: CrepeEditorProps) => {
     loadInitialData();
   }, [file.url]);
 
-  // Create the editor once initialData is ready
   useEffect(() => {
     if (!containerRef.current || initialData === null) return;
 
@@ -44,34 +37,13 @@ const CrepeEditor = ({ onChange }: CrepeEditorProps) => {
       features: {
         [Crepe.Feature.CodeMirror]: true,
       },
-
-      // ← Inject your plugin here
-      // plugins: [runCodePlugin],
     });
 
     crepe.create().then(() => {
       console.log('Editor created');
       editorRef.current = crepe;
 
-      // Add the plugin manually after creation
       const editor = crepe.editor;
-
-      // editor.use(runCodePlugin);
-
-      // editor.use((ctx) => {
-      //   ctx.get(editor.viewCtx).dispatch(
-      //     ctx.get(editor.viewCtx).state.tr.setMeta('addPlugin', runCodePlugin)
-      //   );
-      // });
-
-      // editor.use((ctx) => {
-      //   const oldPlugins = ctx.get(editor.pluginsCtx);
-      //   ctx.set(editor.pluginsCtx, [...oldPlugins, runCodePlugin]);
-      // });
-
-
-
-
 
       let saveTimeout: number | undefined;
 

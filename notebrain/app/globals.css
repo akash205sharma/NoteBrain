@@ -181,3 +181,8 @@
 div[data-slot="sidebar-content"][data-sidebar="content"] {
   overflow: visible;
 }
+
+.CodeRunner{
+  overflow: scroll; 
+  scrollbar-width: none;
+}
