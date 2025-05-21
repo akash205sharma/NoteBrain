@@ -88,12 +88,15 @@ const page = () => {
   
   const run = async () => {
     if (code) {
-      const result = await runCode(code, language);
-      setIsRunning(false);
-      if (result) {
-        setOutput(result.output)
+      try {
+        const result = await runCode(code, language);
+        if (result) {
+          setOutput(result.output)
+        }
+      } catch (error) {
+    setOutput("Error: Some Problem Occured")
       }
-      else setOutput("Error: Some Problem Occured")
+      setIsRunning(false);
     }
   };
 

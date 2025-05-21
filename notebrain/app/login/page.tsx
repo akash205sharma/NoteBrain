@@ -1,22 +1,45 @@
-"use client"
-import { signIn, signOut, useSession } from "next-auth/react";
+'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
+import { Github } from 'lucide-react';
+import { fetchAndSaveRootFiles } from '@/lib/github';
 
-export default function login() {
-  const { data: session } = useSession();
+export default function LoginPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Redirect if session exists
+  useEffect(() => {
+    if (status === 'authenticated') {
+
+      if (session?.accessToken) {
+        fetchAndSaveRootFiles(
+          process.env.NEXT_PUBLIC_GITHUB_USERNAME || 'your-username',
+          'note-brain-data',
+          session.accessToken
+        );
+      }
+
+      router.push('/yourLibrary');
+    }
+  }, [status, router]);
 
   return (
-    <div>
-      {!session ? (
-        <button className="cursor-pointer" onClick={() => signIn("github")}>Login with GitHub</button>
-      ) : (
-        <div>
-          <p>Welcome, {session.user?.name}</p>
-          <button className="cursor-pointer" onClick={() => signOut()}>Logout</button>
-        </div>
-      )}
+    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-[#0d0d0d] rounded-2xl shadow-lg p-8 border border-gray-800">
+        <h1 className="text-3xl font-semibold text-white mb-6 text-center">Welcome</h1>
+        <p className="text-gray-400 text-center mb-8">Login with your GitHub account to continue</p>
 
+        <button
+          onClick={() => signIn('github')}
+          className="w-full flex items-center justify-center gap-3 bg-white text-black font-semibold py-3 rounded-lg hover:bg-gray-200 transition"
+        >
+          <Github className="w-5 h-5" />
+          Sign in with GitHub
+        </button>
+      </div>
     </div>
   );
 }
-

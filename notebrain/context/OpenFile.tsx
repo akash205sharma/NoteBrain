@@ -1,7 +1,6 @@
 'use client'; // for app router only
 
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { Url } from 'url';
 
 
 interface OpenFileContextType {

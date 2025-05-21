@@ -72,7 +72,7 @@ export function AppHeader() {
         {!session ? (
           <button className="cursor-pointer" onClick={() => router.push("/login")}>Login</button>
         ) : (
-          <div>
+          <div className='cursor-pointer pr-2' onClick={ () => {  router.push('/profile') }} >
             <p>{session.user?.name}</p>
           </div>
         )}

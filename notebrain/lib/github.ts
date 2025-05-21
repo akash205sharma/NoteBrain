@@ -1,5 +1,8 @@
 import { TreeNode } from "@/types";
-
+import { saveMarkdown } from "./indexdb";
+function extractFileName(url: string): string {
+  return url.split("/").filter(Boolean).pop() || "";           //  replacing "/yourLibrary/"
+}
 export async function uploadToGitHub({
   token,
   owner,
@@ -54,7 +57,6 @@ export async function uploadToGitHub({
 
   return result;
 }
-
 
 
 
@@ -122,7 +124,8 @@ export async function getMarkdownFromGitHub({
   path: string;
   token: string;
 }): Promise<string> {
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  path=extractFileName(path);
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}.md`;
 
   const res = await fetch(url, {
     headers: {
@@ -173,26 +176,44 @@ export async function getFileTreeFromGitHubJSON({
   const json = await contentRes.json();
   return json as TreeNode;
 }
-  
-
-/*
-
-const markdown = await getMarkdownFromGitHub({
-  owner: "your-username",
-  repo: "note-brain-data",
-  path: "yourLibrary/description.md",
-  token: accessToken,
-});
-console.log("Markdown Content:", markdown);
 
 
-const githubTree = await getFileTreeFromGitHubJSON({
-  owner: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "your-username",
-  repo: "note-brain-data",
-  token: session.accessToken,
-});
+export async function fetchAndSaveFileContent(path: string, owner: string, repo: string, token: string) {
+  const fileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const headers = {
+    Authorization: `token ${token}`,
+    Accept: 'application/vnd.github.v3.raw',
+  };
 
-console.log("File Tree:", tree);
+  const response = await fetch(fileUrl, { headers });
+  if (!response.ok) {
+    console.error(`Failed to fetch file ${path}:`, response.statusText);
+    return;
+  }
+
+  const content = await response.text();
+  await saveMarkdown(content, path.replace(/\.md$/, '')); // path is used as key
+}
 
 
-*/
+ export async function fetchAndSaveRootFiles(owner: string, repo: string, token: string) {
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents`;
+  const headers = {
+    Authorization: `token ${token}`,
+    Accept: 'application/vnd.github.v3+json',
+  };
+
+  const response = await fetch(apiUrl, { headers });
+  if (!response.ok) {
+    console.error("Failed to list repo contents:", response.statusText);
+    return;
+  }
+
+  const files = await response.json();
+
+  for (const file of files) {
+    if (file.type === 'file' && file.name.endsWith('.md')) {
+      await fetchAndSaveFileContent(file.path, owner, repo, token);
+    }
+  }
+}

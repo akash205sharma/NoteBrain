@@ -35,6 +35,7 @@ function openDB(): Promise<IDBDatabase> {
 function extractFileName(url: string): string {
   return url.split("/").filter(Boolean).pop() || "";           //  replacing "/yourLibrary/"
 }
+
 function toFullUrl(fileName: string, folder = "/yourLibrary"): string {
   return `${folder}/${fileName}`;
 }
@@ -44,7 +45,7 @@ export async function saveMarkdown(markdown: string, url:string) {
   const db = await openDB();
   const tx = db.transaction(DB_STORE, "readwrite");
   const store = tx.objectStore(DB_STORE);
-  store.put(markdown, newUrl); // using key newUrl
+  store.put(markdown, newUrl); // using key newUrl which is name of file in github
   
   return new Promise<void>((resolve, reject) => {
     tx.oncomplete = () => resolve();
@@ -68,6 +69,7 @@ export async function getMarkdown(url:string): Promise<string> {
         };
     });
 }
+
 export async function getFileTree(){
   const db = await openDB();
     const tx = db.transaction(DB_STORE, "readonly");

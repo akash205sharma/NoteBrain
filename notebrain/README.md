@@ -15,12 +15,15 @@ types of file
 #### Steps ...
 
 load markdown from github
+github for all users
 Login UI
-CodeRunner
-Collaborator
+CodeRunner all languages
+Notes Collaboration
 
+random page opening and saving problem
 image url problem
-codeblock run button problem
+
+if updats and reloads without syncing in github = loss of data
 
 
 
