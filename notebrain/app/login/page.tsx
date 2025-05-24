@@ -17,7 +17,7 @@ export default function LoginPage() {
         if (session?.accessToken) {
           const token = session.accessToken;
           const owner = session.user?.login!;
-          const repo = "note-brain-data-"+ session.user.name;
+          const repo = "note-brain-data-"+ session.user.login;
 
           try {
             await createRepoIfNotExists({

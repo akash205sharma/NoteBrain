@@ -46,7 +46,7 @@ const CrepeEditor = ({ onChange, initial, markdown }: CrepeEditorProps) => {
     // if (!markdown && session?.accessToken) {
     //   markdown = await getMarkdownFromGitHub({
     //     owner: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "your-username",
-    //     repo: "note-brain-data-"+ session.user.name,
+    //     repo: "note-brain-data-"+ session.user.login,
     //     token: session.accessToken,
     //     path: file.url,
     //   });

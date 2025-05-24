@@ -24,7 +24,7 @@ export function SyncWithGit() {
       await uploadToGitHub({
         token: accessToken,
         owner: session.user?.login!,
-        repo: "note-brain-data-"+ session.user.name,
+        repo: "note-brain-data-"+ session.user.login,
         path: "filetree.json",
         content: JSON.stringify(tree, null, 2),
         message: "Update file tree",
@@ -43,7 +43,7 @@ console.log("Name",session.user.name)
           await uploadToGitHub({
             token: accessToken,
             owner: session.user?.login!,
-            repo: "note-brain-data-"+ session.user.name,
+            repo: "note-brain-data-"+ session.user.login,
             path: file.url + ".md",         // like "yourLibrary/description.md"
             content: file.markdown, // the markdown content
             message: `Sync ${file.url}`
@@ -81,7 +81,7 @@ export const useDeleteFileFromGitHub = () => {
     try {
       await deleteFileFromGitHub({
         owner: session.user?.login!,
-        repo: "note-brain-data-"+ session.user.name,
+        repo: "note-brain-data-"+ session.user.login,
         path: fileName,
         token: session.accessToken as string,
         message: `Remove ${fileName} file`,
