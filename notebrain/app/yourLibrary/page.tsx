@@ -1,7 +1,7 @@
 'use client'
 
 import CrepeEditor from '@/components/CrepeEditor'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 
 export default function HomePage() {

@@ -1,6 +1,6 @@
 'use client';
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import RunSidebar from "@/components/RunSidebar"
 import { useRunningCode } from "@/context/RunningCode";
 

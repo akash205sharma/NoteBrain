@@ -1,4 +1,4 @@
-import { Copy } from "lucide-react"
+
 
 import { Button } from "@/components/ui/button"
 import {
@@ -9,7 +9,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  // DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"

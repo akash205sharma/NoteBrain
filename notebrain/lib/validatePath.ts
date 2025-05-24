@@ -1,4 +1,6 @@
-export function isValidPath(tree: any, currentPath: string): boolean {
+import { TreeNode } from "@/types";
+
+export function isValidPath(tree: TreeNode, currentPath: string): boolean {
   let found = false;
   const traverse = (node: any) => {
     console.log("Node.url",decodeURIComponent(node.url))

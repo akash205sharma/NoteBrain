@@ -2,31 +2,31 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client';
 import { Play } from 'lucide-react';
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import CrepeEditor from '@/components/CrepeEditor'
 import { useOpenFile } from '@/context/OpenFile'
-import { isValidPath } from '@/lib/validatePath'
+// import { isValidPath } from '@/lib/validatePath'
 import { useFileTree } from "@/context/FileTree"
-import { codeBlockComponent, codeBlockView } from '@milkdown/components/code-block'
+// import { codeBlockComponent, codeBlockView } from '@milkdown/components/code-block'
 import { runCode } from '@/actions/runCode'
 import { useRunningCode } from '@/context/RunningCode';
 
 const page = () => {
-  const { tree, setTree } = useFileTree()
+  // const { tree, setTree } = useFileTree()
   const { file, setUrl } = useOpenFile();
   const pathname = usePathname()
   const [isValid, setIsValid] = useState<boolean>(false);
   const {
     isRunning,
-    isSidebarOpen,
+    // isSidebarOpen,
     code,
     language,
-    output,
+    // output,
     setIsRunning,
     setIsSidebarOpen,
     setCode,
     setLang,
-    setInput,
+    // setInput,
     setOutput,
   } = useRunningCode();
 

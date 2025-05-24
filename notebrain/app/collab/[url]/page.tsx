@@ -157,17 +157,17 @@
 
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom/client';
+// import ReactDOM from 'react-dom/client';
 import { Play } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import CrepeEditor from '@/components/CrepeEditor';
+// import CrepeEditor from '@/components/CrepeEditor';
 import { useOpenFile } from '@/context/OpenFile';
-import { useFileTree } from "@/context/FileTree";
-import { runCode } from '@/actions/runCode';
+// import { useFileTree } from "@/context/FileTree";
+// import { runCode } from '@/actions/runCode';
 import { useRunningCode } from '@/context/RunningCode';
 // import { io, Socket } from 'socket.io-client'; 
-import { useCallback } from 'react';
-import debounce from 'lodash.debounce';
+// import { useCallback } from 'react';
+// import debounce from 'lodash.debounce';
 import LiveEditor from '@/components/LiveEditor';
 
 
@@ -176,7 +176,7 @@ import LiveEditor from '@/components/LiveEditor';
 const Page = () => {
   const { setUrl } = useOpenFile();
   const pathname = usePathname();
-  const { setIsRunning, setIsSidebarOpen, setLang, setCode, setOutput, isRunning, code, language } = useRunningCode();
+  // const { setIsRunning, setIsSidebarOpen, setLang, setCode, setOutput, isRunning, code, language } = useRunningCode();
   const [markdown, setMarkdown] = useState('');
   const isRemoteUpdate = useRef(false);
 
