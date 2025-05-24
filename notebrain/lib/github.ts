@@ -28,9 +28,12 @@ export async function uploadToGitHub({
       Accept: "application/vnd.github.v3+json",
     },
   });
+  
 
   if (getRes.ok) {
-    const fileData = await getRes.json();
+    const fileData = await getRes.json();  
+    console.log("File data from GitHub:", fileData);
+ 
     sha = fileData.sha;
   }
 
@@ -47,7 +50,6 @@ export async function uploadToGitHub({
       ...(sha && { sha }), // only include `sha` if updating
     }),
   });
-
   const result = await putRes.json();
 
   if (!putRes.ok) {
@@ -216,4 +218,63 @@ export async function fetchAndSaveFileContent(path: string, owner: string, repo:
       await fetchAndSaveFileContent(file.path, owner, repo, token);
     }
   }
+}
+
+
+
+export async function createRepoIfNotExists({
+  token,
+  owner,
+  repo,
+  isOrg = false,
+  privateRepo = false,
+  description = "Auto-created repo from NoteBrain",
+}: {
+  token: string;
+  owner: string;
+  repo: string;
+  isOrg?: boolean; // true for organization repo
+  privateRepo?: boolean;
+  description?: string;
+}) {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/vnd.github+json",
+    "Content-Type": "application/json",
+  };
+
+  // 1. Check if the repo already exists
+  const repoUrl = `https://api.github.com/repos/${owner}/${repo}`;
+  const checkRes = await fetch(repoUrl, { headers });
+
+  if (checkRes.ok) {
+    console.log("✅ Repository already exists:", `${owner}/${repo}`);
+    return { created: false, repoUrl: `https://github.com/${owner}/${repo}` };
+  }
+
+  // 2. Create the repo (org vs user)
+  const createUrl = isOrg
+    ? `https://api.github.com/orgs/${owner}/repos`
+    : `https://api.github.com/user/repos`;
+
+  const createRes = await fetch(createUrl, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      name: repo,
+      private: privateRepo,
+      description,
+      auto_init: false, // optional: creates README by default
+    }),
+  });
+
+  if (!createRes.ok) {
+    const err = await createRes.json().catch(() => ({}));
+    throw new Error(
+      `Failed to create repository: ${err.message || createRes.statusText}`
+    );
+  }
+
+  console.log("Repository created:", `${owner}/${repo}`);
+  return { created: true, repoUrl: `https://github.com/${owner}/${repo}` };
 }

@@ -36,8 +36,8 @@ export const FileTreeProvider = ({ children }: { children: ReactNode }) => {
                 } else if (session?.accessToken) {
                     // 2. If IndexedDB empty, fetch from GitHub
                     const githubTree = await getFileTreeFromGitHubJSON({
-                        owner: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "your-username",
-                        repo: "note-brain-data",
+                        owner: session.user?.login!,
+                        repo: "note-brain-data-"+ session.user.name,
                         token: session.accessToken,
                     });
 
@@ -61,8 +61,8 @@ export const FileTreeProvider = ({ children }: { children: ReactNode }) => {
             if (session && session.accessToken) {
                 uploadToGitHub({
                     token: session.accessToken,
-                    owner: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "GITHUB_USERNAME",
-                    repo: "note-brain-data",
+                    owner: session.user?.login!,
+                    repo: "note-brain-data-"+ session.user.name,
                     path: "filetree.json",
                     content: JSON.stringify(tree, null, 2),
                     message: "Update file tree",

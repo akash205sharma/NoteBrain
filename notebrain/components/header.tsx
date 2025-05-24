@@ -11,12 +11,23 @@ import { SyncWithGit } from './SyncWithGit'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { CollabDialog } from './CollabDialog'
+
+
 
 export function AppHeader() {
   const { data: session } = useSession();
   const { file } = useOpenFile();
-  
-  const router=useRouter()
+
+  const router = useRouter()
 
   const libraryIndex = file.url.indexOf("/yourLibrary/");
   let segments: string[] = [];
@@ -31,6 +42,10 @@ export function AppHeader() {
     const subPath = file.url.slice(libraryIndex + "/yourLibrary/".length);
     const lastSegment = subPath.split("/")[0]; // e.g. My%20Projects-project1-readme.md-Description
     segments = lastSegment.split("-").map((s) => decodeURIComponent(s));
+  }
+
+  function handleCollab() {
+
   }
 
 
@@ -69,10 +84,17 @@ export function AppHeader() {
           </Breadcrumb>
         </div>
         <SyncWithGit />
+
+        {/* <div className="mr-6 cursor-pointer px-3 py-1 rounded-md hover:bg-gray-200 hover:text-black active:bg-gray-500 transition-colors text-sm font-medium"
+          onClick={() => { handleCollab() }} >Collaborative Editing</div> */}
+
+        {/* <CollabDialog ></CollabDialog> */}
+
+
         {!session ? (
           <button className="cursor-pointer" onClick={() => router.push("/login")}>Login</button>
         ) : (
-          <div className='cursor-pointer pr-2' onClick={ () => {  router.push('/profile') }} >
+          <div className='cursor-pointer pr-2' onClick={() => { router.push('/profile') }} >
             <p>{session.user?.name}</p>
           </div>
         )}

@@ -23,26 +23,27 @@ export function SyncWithGit() {
       //Sync Folder Structure
       await uploadToGitHub({
         token: accessToken,
-        owner: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "GITHUB_USERNAME",
-        repo: "note-brain-data",
+        owner: session.user?.login!,
+        repo: "note-brain-data-"+ session.user.name,
         path: "filetree.json",
         content: JSON.stringify(tree, null, 2),
         message: "Update file tree",
       });
-      // alert("Folder Structure Uploaded!");
+      alert("Folder Structure Uploaded!");
 
 
       //Store all markdown form indexed db
 
       const markdownFiles = await getAllMarkdownFiles();
-
+      
+console.log("Name",session.user.name)
       for (const file of markdownFiles) {
         if (file.url != "Filetree") {
-          console.log(file.url)
+          // console.log(file.url)
           await uploadToGitHub({
             token: accessToken,
-            owner: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "GITHUB_USERNAME",
-            repo: "note-brain-data",
+            owner: session.user?.login!,
+            repo: "note-brain-data-"+ session.user.name,
             path: file.url + ".md",         // like "yourLibrary/description.md"
             content: file.markdown, // the markdown content
             message: `Sync ${file.url}`
@@ -79,15 +80,15 @@ export const useDeleteFileFromGitHub = () => {
 
     try {
       await deleteFileFromGitHub({
-        owner: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "GITHUB_USERNAME",
-        repo: "note-brain-data",
+        owner: session.user?.login!,
+        repo: "note-brain-data-"+ session.user.name,
         path: fileName,
         token: session.accessToken as string,
         message: `Remove ${fileName} file`,
       });
       alert("Deleted Successfully");
     } catch (err) {
-      // console.error("Failed to delete:", err);
+      console.error("Failed to delete:", err);
       // alert("Failed to delete");
     }
   };

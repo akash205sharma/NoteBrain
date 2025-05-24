@@ -131,10 +131,7 @@ const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; pa
 		else {
 			console.log("Name can not be empty")
 		}
-
 	}
-
-
 
 	return (
 		<SidebarMenu>
@@ -213,9 +210,7 @@ const TreeRender = ({ node, parent, functionLifting, url }: { node: TreeNode; pa
 
 				</SidebarMenuSubItem>
 			}
-
 		</SidebarMenu>
-
 	)
 }
 

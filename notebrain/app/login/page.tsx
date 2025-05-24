@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 import { Github } from 'lucide-react';
-import { fetchAndSaveRootFiles } from '@/lib/github';
+import { createRepoIfNotExists, fetchAndSaveRootFiles } from '@/lib/github';
 
 export default function LoginPage() {
   const { data: session, status } = useSession();
@@ -13,18 +13,33 @@ export default function LoginPage() {
   // Redirect if session exists
   useEffect(() => {
     if (status === 'authenticated') {
+      const setupRepo = async () => {
+        if (session?.accessToken) {
+          const token = session.accessToken;
+          const owner = session.user?.login!;
+          const repo = "note-brain-data-"+ session.user.name;
 
-      if (session?.accessToken) {
-        fetchAndSaveRootFiles(
-          process.env.NEXT_PUBLIC_GITHUB_USERNAME || 'your-username',
-          'note-brain-data',
-          session.accessToken
-        );
-      }
+          try {
+            await createRepoIfNotExists({
+              token,
+              owner,
+              repo,
+              isOrg: false,
+            });
 
-      router.push('/yourLibrary');
+            await fetchAndSaveRootFiles(owner, repo, token);
+
+            router.push('/yourLibrary');
+          } catch (err) {
+            console.error("Setup error:", err);
+          }
+        }
+      };
+
+      setupRepo();
     }
-  }, [status, router]);
+  }, [status, router, session]);
+
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
