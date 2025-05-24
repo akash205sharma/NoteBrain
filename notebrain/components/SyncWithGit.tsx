@@ -29,14 +29,14 @@ export function SyncWithGit() {
         content: JSON.stringify(tree, null, 2),
         message: "Update file tree",
       });
-      alert("Folder Structure Uploaded!");
+      // alert("Folder Structure Uploaded!");
 
 
       //Store all markdown form indexed db
 
       const markdownFiles = await getAllMarkdownFiles();
       
-console.log("Name",session.user.name)
+// console.log("Name",session.user.name)
       for (const file of markdownFiles) {
         if (file.url != "Filetree") {
           // console.log(file.url)
@@ -52,7 +52,7 @@ console.log("Name",session.user.name)
       }
 
 
-      alert("All Files Uploaded!");
+      alert("All Files Synced!");
     } catch (err) {
       console.error(err);
     }

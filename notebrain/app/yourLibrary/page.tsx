@@ -42,25 +42,19 @@ Just open or create a file from the sidebar to get started.
 
 ---
 
-## 🚀 How It Works
 
-1. **Login with GitHub** using the secure OAuth flow.
-2. **Select or create a GitHub repo** where your notes will be stored.
-3. Start writing in **Markdown** with real-time updates.
-4. All your changes are **auto-pushed to GitHub** with commit history.
-
----
-
-## 🔧 Tech Stack
+## 🔧 Use Stack
 
 \`\`\`ts
 // Powered by the modern web
 {
-  frontend: "Next.js + Tailwind CSS",
-  auth: "NextAuth.js with GitHub Provider",
-  storage: "GitHub Repos (via GitHub API)",
-  editor: "Markdown + Live Preview",
-  hosting: "Vercel + GitHub Pages (optional)"
+  font: "Make your font bold italic and strikethrough,
+  headings: "options for heading levels from 1 to 6",
+  Quote: "Quote from key points",
+  Lists: "Organise your ideas in list and bullets",
+  Code: "Keep your notes and codes together",
+  tables: "No need of DBMS software for daily use",
+  links: "Add link in the same document,
 }
 \`\`\`
 
@@ -87,8 +81,9 @@ Just open or create a file from the sidebar to get started.
 
 \`\`\`bash
 1. Click “Login with GitHub”
-2. Create or select a repo (we suggest \`note-brain-data\`)
+2. A repo will automatically be created with name note-brain-data-{username}
 3. Start writing. It’s that simple.
+4. Use / for accessing functions
 \`\`\`
 
 > 🧠 Built for developers who think in markdown and organize in Git.
