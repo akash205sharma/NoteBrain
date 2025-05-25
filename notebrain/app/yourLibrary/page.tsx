@@ -2,8 +2,6 @@
 
 import CrepeEditor from '@/components/CrepeEditor'
 import { useState } from 'react'
-
-
 export default function HomePage() {
 
   const [markdown, setMarkdown] = useState('')
@@ -83,11 +81,14 @@ Just open or create a file from the sidebar to get started.
 1. Click “Login with GitHub”
 2. A repo will automatically be created with name note-brain-data-{username}
 3. Start writing. It’s that simple.
-4. Use / for accessing functions
+4. Use "/" for accessing functions
 \`\`\`
 
 > 🧠 Built for developers who think in markdown and organize in Git.
 `;
+
+
+
 
 
   return (

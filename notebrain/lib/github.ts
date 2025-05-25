@@ -32,7 +32,7 @@ export async function uploadToGitHub({
 
   if (getRes.ok) {
     const fileData = await getRes.json();  
-    console.log("File data from GitHub:", fileData);
+    // console.log("File data from GitHub:", fileData);
  
     sha = fileData.sha;
   }

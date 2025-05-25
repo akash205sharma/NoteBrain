@@ -6,15 +6,20 @@ import { useFileTree } from "@/context/FileTree";
 // import { useRouter } from "next/router";
 import { getAllMarkdownFiles } from "@/lib/indexdb";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 export function SyncWithGit() {
+
+  
+  
   const { data: session } = useSession();
   const { tree, setTree } = useFileTree();
   const upload = async () => {
+    
     // const router = useRouter();
     if (!session) {
       // router.push("/login")
-      alert("Please Login");
+      toast("Please Login first");
       return;
     }
     const accessToken = (session as any).accessToken;
@@ -51,8 +56,7 @@ export function SyncWithGit() {
         }
       }
 
-
-      alert("All Files Synced!");
+      toast("All Files Synced successfully!");
     } catch (err) {
       console.error(err);
     }
