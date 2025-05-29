@@ -1,5 +1,6 @@
 export async function runCode(code:string|null,language:string|null) {
-  const response = await fetch('http://localhost:4000/run', {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const response = await fetch(`${backendUrl}/run`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
